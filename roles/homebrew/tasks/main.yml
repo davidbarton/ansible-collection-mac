@@ -1,0 +1,45 @@
+---
+- name: Install software with Homebrew.
+  tags: [homebrew]
+  block:
+    - name: Force update Homebrew (if configured).
+      ansible.builtin.command: "{{ homebrew_brew_bin_path }}/brew update --force"
+      register: brew_update_output
+      changed_when: brew_update_output.rc != 0
+      when: homebrew_update
+
+    - name: Add Homebrew taps.
+      community.general.homebrew_tap:
+        tap: "{{ item.name | default(item) }}"
+        state: "{{ item.state | default('present') }}" # noqa: args[module]
+        url: "{{ item.url | default(omit) }}"
+      loop: "{{ homebrew_taps }}"
+
+    - name: Add Homebrew packages.
+      community.general.homebrew:
+        name: "{{ item.name | default(item) }}"
+        state: "{{ item.state | default('present') }}" # noqa: args[module]
+        install_options: "{{ item.install_options | default(omit) }}"
+      loop: "{{ homebrew_packages }}"
+
+    - name: Upgrade all Homebrew packages (if configured).
+      community.general.homebrew:
+        update_homebrew: true
+        upgrade_all: true
+      when: homebrew_upgrade_all_packages
+
+    - name: Add Homebrew Cask applications.
+      community.general.homebrew_cask:
+        name: "{{ item.name | default(item) }}"
+        state: "{{ item.state | default('present') }}" # noqa: args[module]
+        install_options: "{{ item.install_options | default(omit) }}"
+        accept_external_apps: "{{ homebrew_cask_accept_external_apps }}"
+        sudo_password: "{{ ansible_become_password | default(omit) }}"
+        greedy: "{{ homebrew_cask_greedy }}"
+      loop: "{{ homebrew_cask_applications }}"
+
+    - name: Upgrade all Homebrew Cask applications (if configured).
+      community.general.homebrew_cask:
+        update_homebrew: true
+        upgrade_all: true
+      when: homebrew_cask_upgrade_all_applications

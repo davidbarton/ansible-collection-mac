@@ -1,0 +1,24 @@
+---
+- name: Manage macOS Dock items with dockutil.
+  tags: [dock]
+  block:
+    - name: Remove Dock items.
+      ansible.builtin.command: "dockutil --remove '{{ item }}' --no-restart"
+      register: dock_remove_output
+      failed_when: dock_remove_output.rc != 0 and 'Remove failed for' not in dock_remove_output.stderr # We do not mind if the item is already removed
+      changed_when: dock_remove_output.rc == 0
+      loop: "{{ ['all'] if dock_remove_all else dock_remove + dock_add | map(attribute='name') }}" # Replace with ['all'] to remove all items or remove all items from dock_remove list and also all items from dock_add list
+      notify:
+        - Restart Dock.
+
+    - name: Add Dock items.
+      ansible.builtin.shell: "test -d '{{ item.path | default(item) }}' && dockutil --add '{{ item.path | default(item) }}' --position '{{ item.pos | default('beginning') }}' --no-restart" # Test if the directory (App) exists and add it to the dock at the position or at the beginning
+      register: dock_add_output
+      failed_when: dock_add_output.rc != 0 and 'Add failed for' not in dock_add_output.stderr # We do not mind if the item is already present
+      changed_when: dock_add_output.rc == 0
+      loop: "{{ dock_add | reverse }}"
+      notify:
+        - Restart Dock.
+  rescue:
+    - name: Flush handlers
+      meta: flush_handlers

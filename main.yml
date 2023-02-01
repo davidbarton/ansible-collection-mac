@@ -2,7 +2,21 @@
 - name: Setup macOS
   hosts: all
 
+  vars_files:
+    - default.config.yml
+
+  vars_prompt:
+    - name: ansible_become_password
+      prompt: What is your password?
+      private: true
+
   tasks:
-    - name: Hello world
-      ansible.builtin.debug:
-        msg: "Say hello"
+    - name: Install software with Homebrew.
+      ansible.builtin.import_role:
+        name: homebrew
+      tags: [homebrew]
+
+    - name: Manage macOS Dock items with dockutil.
+      ansible.builtin.import_role:
+        name: dock
+      tags: [dock]

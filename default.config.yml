@@ -1,0 +1,25 @@
+---
+##### Homebrew config #####
+
+homebrew_packages:
+  - ansible
+  - ansible-lint
+  - bash
+  - zsh
+  - git
+  - rclone
+
+homebrew_cask_applications:
+  - hpedrorodrigues/tools/dockutil
+  - iterm2
+  - firefox
+
+##### Dock config #####
+
+dock_remove_all: yes
+
+dock_add:
+  - name: "Firefox"
+    path: "/Applications/Firefox.app"
+  - name: "iTerm"
+    path: "/Applications/iTerm.app"

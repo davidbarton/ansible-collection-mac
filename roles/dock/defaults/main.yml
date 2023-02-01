@@ -1,0 +1,17 @@
+---
+# Remove all Dock items if true.
+dock_remove_all: false
+
+# Dock items to remove.
+dock_remove: []
+# - Launchpad
+# - Podcasts
+
+# Dock items to add.
+dock_add: []
+# - name: Mail
+#   path: "/System/Applications/Mail.app"
+#   pos: 3
+# - name: Firefox
+#   path: "/Applications/Firefox.app"
+#   pos: end
