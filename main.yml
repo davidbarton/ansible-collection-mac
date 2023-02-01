@@ -1,0 +1,8 @@
+---
+- name: Setup macOS
+  hosts: all
+
+  tasks:
+    - name: Hello world
+      ansible.builtin.debug:
+        msg: "Say hello"
