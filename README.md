@@ -1,3 +1,3 @@
-# Ansible Collection - davidbarton.mac
+# Ansible collection for macOS setup automation
 
-Documentation for the collection.
+[![CI](https://github.com/davidbarton/ansible-collection-mac/actions/workflows/ci.yml/badge.svg)](https://github.com/davidbarton/ansible-collection-mac/actions/workflows/ci.yml)
