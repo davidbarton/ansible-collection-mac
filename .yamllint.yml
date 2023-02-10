@@ -1,0 +1,15 @@
+---
+extends: default
+
+rules:
+  comments:
+    level: error
+    min-spaces-from-content: 1
+  comments-indentation:
+    level: error
+  document-start:
+    level: error
+  line-length:
+    max: 400
+  truthy:
+    level: error
