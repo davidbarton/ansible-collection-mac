@@ -1,39 +1,60 @@
 ---
-- name: Reset Dock.
+- name: Reset macOS Dock to default state.
   tags: [dock]
   block:
     - name: Reset Dock.
       ansible.builtin.command: "defaults delete com.apple.dock"
-      register: dock_reset_output
-      failed_when: dock_reset_output.rc != 0 and 'Domain (com.apple.dock) not found.' not in dock_reset_output.stderr # We do not mind if it is already after reset
-      changed_when: dock_reset_output.rc == 0
-      when: dock_reset
+      changed_when: true
+      when: dock_reset_defaults
       notify:
-        - Restart Dock.
+        - Restart Dock. # You need to restart Dock after reset to default state.
   always:
     - name: Flush handlers.
       ansible.builtin.meta: flush_handlers
 
-- name: Manage macOS Dock items with dockutil.
+- name: Manage macOS Dock items with dockutil package.
   tags: [dock]
   block:
+    - name: Check if dockutil package is available.
+      ansible.builtin.command: "dockutil --version"
+      register: dock_check_output
+      changed_when: false
+
     - name: Remove Dock items.
       ansible.builtin.command: "dockutil --remove '{{ item }}' --no-restart"
       register: dock_remove_output
-      failed_when: dock_remove_output.rc != 0 and 'Remove failed for' not in dock_remove_output.stderr # We do not mind if the item is already removed
+      # We do not mind if the item is already removed.
+      failed_when: dock_remove_output.rc != 0 and 'Remove failed for' not in dock_remove_output.stderr
       changed_when: dock_remove_output.rc == 0
-      loop: "{{ ['all'] if dock_remove_all else dock_remove + dock_add | map(attribute='name') }}" # Replace with ['all'] to remove all items or remove all items from dock_remove list and also all items from dock_add list
+      # Replace with ['all'] to remove all items or remove all items from
+      # dock_remove list and all items from dock_add list.
+      loop: "{{ ['all'] if dock_remove_all else dock_remove + dock_add | map(attribute='name') }}"
       notify:
         - Restart Dock.
 
     - name: Add Dock items.
-      ansible.builtin.shell: "test -d '{{ item.path | default(item) }}' && dockutil --add '{{ item.path | default(item) }}' --position '{{ item.pos | default('beginning') }}' --no-restart" # Test if the directory (App) exists and add it to the dock at the position or at the beginning
+      # Test if the directory (App) exists and add it to the Dock.
+      ansible.builtin.shell: >
+        test -d '{{ item.path }}' &&
+        dockutil
+        --add '{{ item.path }}'
+        --label '{{ item.name }}'
+        --position '{{ item.pos | default('beginning') }}'
+        --no-restart
       register: dock_add_output
-      failed_when: dock_add_output.rc != 0 and 'Add failed for' not in dock_add_output.stderr # We do not mind if the item is already present
+      # We do not mind if the item is already present.
+      failed_when: dock_add_output.rc != 0 and 'Add failed for' not in dock_add_output.stderr
       changed_when: dock_add_output.rc == 0
+      # The new items are added to the beginning by default. We need to iterate
+      # them in reverse to make sure we get the correct order.
       loop: "{{ dock_add | reverse }}"
       notify:
         - Restart Dock.
   rescue:
+    - name: The dockutil package error.
+      ansible.builtin.fail:
+        msg: "The dockutil package is not available. Please install it."
+      when: dock_check_output.rc != 0
+  always:
     - name: Flush handlers.
       ansible.builtin.meta: flush_handlers

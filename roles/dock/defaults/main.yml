@@ -1,17 +1,17 @@
 ---
-# Reset dock to default Dock settings
-dock_reset: false
+# Reset macOS Dock to default state if true.
+dock_reset_defaults: false
 
-# Remove all Dock items if true.
+# Remove all macOS Dock items if true.
 dock_remove_all: false
 
-# Dock items to remove.
+# The macOS Dock items to remove.
 dock_remove: []
 # dock_remove:
 #   - Launchpad
 #   - Podcasts
 
-# Dock items to add.
+# The macOS Dock items to add.
 dock_add: []
 # dock_add:
 #   - name: Mail

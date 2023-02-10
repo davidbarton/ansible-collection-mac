@@ -16,8 +16,6 @@ homebrew_cask_applications:
 
 ##### Dock config #####
 
-dock_reset: true
-
 dock_remove_all: true
 
 dock_add:
