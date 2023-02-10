@@ -1,10 +1,4 @@
 ---
-# Set Homebrew prefix.
-homebrew_prefix: "{{ '/opt/homebrew' if ansible_machine == 'arm64' else '/usr/local' }}"
-
-# Set Homebrew bin path.
-homebrew_brew_bin_path: "{{ homebrew_prefix }}/bin"
-
 # Homebrew taps to add.
 homebrew_taps: []
 # homebrew_taps:
@@ -17,23 +11,17 @@ homebrew_packages: []
 #   - bash
 #   - zsh
 
-# Homebrew Cask applications to add.
+# Homebrew cask applications to add.
 homebrew_cask_applications: []
 # homebrew_cask_applications:
 #   - iterm2
 #   - firefox
 
-# Force update Homebrew first if true.
-homebrew_update: false
+# Update Homebrew if true.
+homebrew_update: true
 
-# Upgrade Homebrew if true.
-homebrew_upgrade_all_packages: false
+# Upgrade Homebrew packages if true.
+homebrew_upgrade_packages: false
 
-# Upgrade Homebrew Cask if true.
-homebrew_cask_upgrade_all_applications: false
-
-# Allow Homebrew Cask to install external apps if true.
-homebrew_cask_accept_external_apps: false
-
-# Pass a greedy flag to Homebrew Cask upgrade if true.
-homebrew_cask_greedy: false
+# Upgrade Homebrew cask if true.
+homebrew_cask_upgrade_applications: false

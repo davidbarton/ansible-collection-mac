@@ -15,7 +15,7 @@
 - name: Manage macOS Dock items with dockutil package.
   tags: [dock]
   block:
-    - name: Check if dockutil package is available.
+    - name: Check if dockutil package is installed.
       ansible.builtin.command: "dockutil --version"
       register: dock_check_output
       changed_when: false
@@ -53,7 +53,7 @@
   rescue:
     - name: The dockutil package error.
       ansible.builtin.fail:
-        msg: "The dockutil package is not available. Please install it."
+        msg: "The dockutil package is not installed. Please install it."
       when: dock_check_output.rc != 0
   always:
     - name: Flush handlers.
