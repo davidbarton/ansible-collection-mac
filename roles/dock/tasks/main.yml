@@ -1,4 +1,19 @@
 ---
+- name: Reset Dock.
+  tags: [dock]
+  block:
+    - name: Reset Dock.
+      ansible.builtin.command: "defaults delete com.apple.dock"
+      register: dock_reset_output
+      failed_when: dock_reset_output.rc != 0 and 'Domain (com.apple.dock) not found.' not in dock_reset_output.stderr # We do not mind if it is already after reset
+      changed_when: dock_reset_output.rc == 0
+      when: dock_reset
+      notify:
+        - Restart Dock.
+  always:
+    - name: Flush handlers.
+      ansible.builtin.meta: flush_handlers
+
 - name: Manage macOS Dock items with dockutil.
   tags: [dock]
   block:
@@ -20,5 +35,5 @@
       notify:
         - Restart Dock.
   rescue:
-    - name: Flush handlers
-      meta: flush_handlers
+    - name: Flush handlers.
+      ansible.builtin.meta: flush_handlers

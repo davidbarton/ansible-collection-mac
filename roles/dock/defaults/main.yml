@@ -1,17 +1,32 @@
 ---
+# Reset dock to default Dock settings
+dock_reset: false
+
 # Remove all Dock items if true.
 dock_remove_all: false
 
 # Dock items to remove.
 dock_remove: []
-# - Launchpad
-# - Podcasts
+# dock_remove:
+#   - Launchpad
+#   - Podcasts
 
 # Dock items to add.
 dock_add: []
-# - name: Mail
-#   path: "/System/Applications/Mail.app"
-#   pos: 3
-# - name: Firefox
-#   path: "/Applications/Firefox.app"
-#   pos: end
+# dock_add:
+#   - name: Mail
+#     path: "/System/Applications/Mail.app"
+#     pos: 0
+#   - name: "iTerm"
+#     path: "/Applications/iTerm.app"
+#     pos: beginning
+#   - name: Firefox
+#     path: "/Applications/Firefox.app"
+#     pos: end
+# dock_add:
+#   - name: Mail
+#     path: "/System/Applications/Mail.app"
+#   - name: "iTerm"
+#     path: "/Applications/iTerm.app"
+#   - name: Firefox
+#     path: "/Applications/Firefox.app"
