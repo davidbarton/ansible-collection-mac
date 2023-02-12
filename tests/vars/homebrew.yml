@@ -1,0 +1,18 @@
+---
+homebrew_taps:
+  - petere/postgresql
+  - denji/nginx
+
+homebrew_packages:
+  - denji/nginx/auto-keepalive-nginx-module
+  - bash
+
+homebrew_cask_applications:
+  - iterm2
+  - firefox
+
+homebrew_update: true
+
+homebrew_upgrade_packages: true
+
+homebrew_cask_upgrade_applications: true
