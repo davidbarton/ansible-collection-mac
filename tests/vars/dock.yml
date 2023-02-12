@@ -1,0 +1,19 @@
+---
+dock_reset_defaults: true
+
+dock_remove_all: false
+
+dock_remove:
+  - Launchpad
+  - Podcasts
+
+dock_add:
+  - name: Mail
+    path: "/System/Applications/Mail.app"
+    pos: 0
+  - name: "iTerm"
+    path: "/Applications/iTerm.app"
+    pos: beginning
+  - name: Firefox
+    path: "/Applications/Firefox.app"
+    pos: end

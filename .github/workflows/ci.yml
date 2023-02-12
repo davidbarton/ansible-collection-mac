@@ -19,3 +19,52 @@ jobs:
 
       - name: Run ansible-lint.
         uses: ansible/ansible-lint-action@v6
+
+  integration:
+    name: Test
+    runs-on: macos-latest
+    env:
+      ANSIBLE_FORCE_COLOR: true
+      ANSIBLE_ANY_ERRORS_FATAL: true
+      ANSIBLE_COLLECTIONS_PATHS: ../../../
+      ANSIBLE_CONFIG: tests/ansible.cfg
+    defaults:
+      run:
+        working-directory: ansible_collections/davidbarton/mac
+    steps:
+      - name: Checkout the codebase.
+        uses: actions/checkout@v3
+        with:
+          path: ansible_collections/davidbarton/mac
+
+      - name: Set up Python.
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          cache: pip
+
+      - name: Install Python dependencies.
+        run: pip install -r tests/requirements.txt
+
+      - name: Install Ansible Galaxy dependencies.
+        run: ansible-galaxy collection install community.general
+
+      - name: Hotfix brew upgrade.
+        run: |
+          # Unlink and re-link to prevent errors when github mac runner images
+          # install python outside of brew, for example:
+          # https://github.com/orgs/Homebrew/discussions/3895
+          # https://github.com/actions/setup-python/issues/577
+          # https://github.com/actions/runner-images/issues/6459
+          # https://github.com/actions/runner-images/issues/6507
+          # https://github.com/actions/runner-images/issues/2322
+          brew list -1 | grep python | while read formula; do brew unlink $formula; brew link --overwrite $formula; done
+
+      - name: Install dockutil package using Homebrew.
+        run: brew install hpedrorodrigues/tools/dockutil
+
+      - name: Run test.
+        run: ansible-playbook tests/test.yml --tags all
+
+      - name: Run idempotence test.
+        run: ansible-playbook tests/test.yml --tags all

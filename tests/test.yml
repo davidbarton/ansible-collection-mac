@@ -1,0 +1,28 @@
+---
+- name: Test macOS setup automation collection.
+  hosts: all
+
+  tasks:
+    - name: Test homebrew role.
+      block:
+        - name: Include vars for homebrew role.
+          ansible.builtin.include_vars: vars/homebrew.yml
+
+        - name: Test homebrew role.
+          ansible.builtin.include_role:
+            name: davidbarton.mac.homebrew
+
+    - name: Test dock role.
+      block:
+        - name: Test dock_remove_all option for dock role.
+          ansible.builtin.include_role:
+            name: davidbarton.mac.dock
+          vars:
+            dock_remove_all: true
+
+        - name: Include vars for dock role.
+          ansible.builtin.include_vars: vars/dock.yml
+
+        - name: Test dock role.
+          ansible.builtin.include_role:
+            name: davidbarton.mac.dock
