@@ -51,10 +51,12 @@
       notify:
         - Restart Dock.
   rescue:
-    - name: The dockutil package error.
+    - name: The dockutil package operation error.
       ansible.builtin.fail:
-        msg: "The dockutil package is not installed. Please install it."
-      when: dock_check_output.rc != 0
+        msg: >
+          "{{ 'The dockutil package is not installed. Please install it.'
+          if dock_check_output.rc != 0
+          else 'The dockutil package operation error.' }}"
   always:
     - name: Flush handlers.
       ansible.builtin.meta: flush_handlers

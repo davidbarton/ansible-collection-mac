@@ -47,7 +47,9 @@
         upgrade_all: true
       when: homebrew_cask_upgrade_applications
   rescue:
-    - name: The brew package error.
+    - name: The brew package operation error.
       ansible.builtin.fail:
-        msg: "The brew package is not installed. Please install it."
-      when: brew_check_output.rc != 0
+        msg: >
+          "{{ 'The brew package is not installed. Please install it.'
+          if brew_check_output.rc != 0
+          else 'The brew package operation error.' }}"
