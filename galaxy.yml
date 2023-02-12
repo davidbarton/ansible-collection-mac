@@ -13,14 +13,14 @@ license:
   - MIT
 
 tags:
-  - tools
   - mac
   - macos
   - osx
-  - brew
   - homebrew
+  - brew
   - dock
   - dockutil
+  - tools
 
 dependencies:
   community.general: ">=6.0.0"
