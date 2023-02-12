@@ -47,7 +47,7 @@ jobs:
         run: pip install -r tests/requirements.txt
 
       - name: Install Ansible Galaxy dependencies.
-        run: ansible-galaxy collection install community.general
+        run: ansible-galaxy install -r tests/requirements.yml
 
       - name: Hotfix brew upgrade.
         run: |
