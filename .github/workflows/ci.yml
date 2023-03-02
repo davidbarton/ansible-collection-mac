@@ -49,17 +49,6 @@ jobs:
       - name: Install Ansible Galaxy dependencies.
         run: ansible-galaxy install -r tests/requirements.yml
 
-      - name: Hotfix brew upgrade.
-        run: |
-          # Unlink and re-link to prevent errors when github mac runner images
-          # install python outside of brew, for example:
-          # https://github.com/orgs/Homebrew/discussions/3895
-          # https://github.com/actions/setup-python/issues/577
-          # https://github.com/actions/runner-images/issues/6459
-          # https://github.com/actions/runner-images/issues/6507
-          # https://github.com/actions/runner-images/issues/2322
-          brew list -1 | grep python | while read formula; do brew unlink $formula; brew link --overwrite $formula; done
-
       - name: Install dockutil package using Homebrew.
         run: |
           # Use cask temporarily for dockutil
