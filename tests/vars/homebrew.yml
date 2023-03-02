@@ -13,8 +13,6 @@ homebrew_cask_applications:
 
 homebrew_update: true
 
-# Enable again when fixed https://github.com/actions/setup-python/issues/577
-homebrew_upgrade_packages: false
+homebrew_upgrade_packages: true
 
-# Enable again when fixed https://github.com/actions/setup-python/issues/577
-homebrew_cask_upgrade_applications: false
+homebrew_cask_upgrade_applications: true
