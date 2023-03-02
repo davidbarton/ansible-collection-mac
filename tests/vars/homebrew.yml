@@ -1,5 +1,9 @@
 ---
 homebrew_taps:
+  - _name: homebrew/core
+    _state: absent
+  - _name: homebrew/cask
+    _state: absent
   - petere/postgresql
   - denji/nginx
 
