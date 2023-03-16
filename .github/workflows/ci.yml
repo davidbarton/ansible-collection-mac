@@ -47,7 +47,13 @@ jobs:
         run: pip install -r tests/requirements.txt
 
       - name: Install Ansible Galaxy dependencies.
-        run: ansible-galaxy install -r tests/requirements.yml
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: |
+            cd ansible_collections/davidbarton/mac
+            ansible-galaxy install -r tests/requirements.yml
 
       - name: Install dockutil package using Homebrew.
         run: |
