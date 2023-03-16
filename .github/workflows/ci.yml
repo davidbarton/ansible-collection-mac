@@ -8,6 +8,7 @@ on:
       - main
   schedule:
     - cron: "0 0 * * 0"
+  # You can trigger run here https://github.com/davidbarton/ansible-collection-mac/actions/workflows/ci.yml
   workflow_dispatch:
     inputs:
       record_test:
@@ -87,13 +88,11 @@ jobs:
       - name: Run test.
         run: >
           ansible-playbook tests/test.yml --tags all
-          | sed -n '/PLAY RECAP/,$p'
           | tee test.log
 
       - name: Run idempotence test.
         run: >
           ansible-playbook tests/test.yml --tags all
-          | sed -n '/PLAY RECAP/,$p'
           | tee idempotence.log
 
       - name: Assert test.log.
