@@ -8,6 +8,13 @@ on:
       - main
   schedule:
     - cron: "0 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      record_test:
+        description: "Record new test expectations."
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   lint:
@@ -61,8 +68,58 @@ jobs:
           # https://github.com/kcrawford/dockutil/issues/127#issuecomment-1118733013
           brew install hpedrorodrigues/tools/dockutil
 
+      - name: Download test.log.
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: test.log
+          path: ansible_collections/davidbarton/mac/expected.test.log
+          workflow_conclusion: success
+          if_no_artifact_found: warn
+
+      - name: Download idempotence.log.
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: idempotence.log
+          path: ansible_collections/davidbarton/mac/expected.idempotence.log
+          workflow_conclusion: success
+          if_no_artifact_found: warn
+
       - name: Run test.
-        run: ansible-playbook tests/test.yml --tags all
+        run: >
+          ansible-playbook tests/test.yml --tags all
+          | sed -n '/PLAY RECAP/,$p'
+          | tee test.log
 
       - name: Run idempotence test.
-        run: ansible-playbook tests/test.yml --tags all
+        run: >
+          ansible-playbook tests/test.yml --tags all
+          | sed -n '/PLAY RECAP/,$p'
+          | tee idempotence.log
+
+      - name: Assert test.log.
+        uses: GuillaumeFalourd/diff-action@v1
+        with:
+          first_file_path: ansible_collections/davidbarton/mac/expected.test.log
+          second_file_path: ansible_collections/davidbarton/mac/test.log
+          expected_result: PASSED
+        if: ${{ !inputs.record_test && hashFiles('ansible_collections/davidbarton/mac/expected.test.log') }}
+
+      - name: Assert idempotence.log.
+        uses: GuillaumeFalourd/diff-action@v1
+        with:
+          first_file_path: ansible_collections/davidbarton/mac/expected.idempotence.log
+          second_file_path: ansible_collections/davidbarton/mac/idempotence.log
+          expected_result: PASSED
+        if: ${{ !inputs.record_test && hashFiles('ansible_collections/davidbarton/mac/expected.idempotence.log') }}
+
+      - name: Upload test.log.
+        uses: actions/upload-artifact@v3
+        with:
+          name: test.log
+          path: ansible_collections/davidbarton/mac/test.log
+
+      - name: Upload idempotence.log.
+        uses: actions/upload-artifact@v3
+        with:
+          name: idempotence.log
+          path: ansible_collections/davidbarton/mac/idempotence.log
