@@ -1,0 +1,24 @@
+---
+- name: Pre-release check.
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    galaxy_config_path: ../galaxy.yml
+    galaxy_config: "{{ lookup('template', galaxy_config_path) | from_yaml }}"
+
+  tasks:
+    - name: Ensure the version set in galaxy.yml is up to date.
+      ansible.builtin.debug:
+        msg: The version in galaxy.yml needs to match the release git tag.
+      failed_when: >
+        not galaxy_config.version
+        or lookup('ansible.builtin.env', 'VERSION_NAME') != galaxy_config.version
+
+    - name: Ensure ANSIBLE_GALAXY_TOKEN env variable is set.
+      ansible.builtin.debug:
+        msg: A valid ANSIBLE_GALAXY_TOKEN must be set.
+      failed_when: lookup('ansible.builtin.env', 'ANSIBLE_GALAXY_TOKEN') | length == 0
+      no_log: true
+      diff: false
