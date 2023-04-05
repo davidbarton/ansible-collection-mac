@@ -135,7 +135,7 @@ jobs:
 
   release:
     name: Release
-    if: github.event.push.tags
+    if: startsWith(github.ref, 'refs/tags/')
     needs:
       - lint
       - test
