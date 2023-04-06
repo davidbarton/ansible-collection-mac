@@ -108,4 +108,4 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 3
-          command: ansible-galaxy collection publish ${{ env.BUILD_ARTIFACT_NAME }} --token ${{ env.ANSIBLE_GALAXY_TOKEN }}
+          command: ansible-galaxy collection publish ${{ env.BUILD_ARTIFACT_NAME }} --token ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
