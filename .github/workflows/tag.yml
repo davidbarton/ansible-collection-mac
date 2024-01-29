@@ -1,0 +1,23 @@
+---
+name: CI
+
+on:
+  # Trigger manually here https://github.com/davidbarton/ansible-collection-mac/actions/workflows/tag.yml
+  # The manual trigger is used to add new git tag
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: Enter the new git tag name like "1.2.3".
+        required: true
+        type: string
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the codebase.
+        uses: actions/checkout@v3
+
+      - name: Run ansible-lint.
+        run: git tag ${{ inputs.tag_name }} && git push origin ${{ inputs.tag_name }}

@@ -1,0 +1,15 @@
+---
+- name: Setup macOS
+  hosts: all
+
+  vars_files:
+    - config.yml
+
+  tasks:
+    - name: Install software with Homebrew.
+      ansible.builtin.import_role:
+        name: ../roles/homebrew
+
+    # - name: Manage macOS Dock items with dockutil.
+    #   ansible.builtin.import_role:
+    #     name: ../roles/dock
